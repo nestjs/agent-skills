@@ -37,16 +37,18 @@ copies every skill into `.agents/skills/`, which Codex and Cursor read. Choose w
 | `agents` (default) | `.agents/skills/` | Codex, Cursor and other Agent Skills readers |
 | `claude` | `.claude/skills/` | Claude Code (and Cursor) |
 | `cursor` | `.cursor/skills/` | Cursor |
+| `all` | `.agents/skills/` and `.claude/skills/` | Codex, Cursor and Claude Code at once (Cursor reads both folders) |
 
 ```bash
 npx @nestjs/skills add --agent claude              # Claude Code, this project
+npx @nestjs/skills add --agent all                 # Codex, Cursor and Claude Code
 npx @nestjs/skills add --agent agents --global     # every project on your machine (~/.agents/skills)
 npx @nestjs/skills add nestjs nestjs-auth          # only some skills
 npx @nestjs/skills list                            # what's in the package
 npx @nestjs/skills remove                          # remove what it installed
 ```
 
-`--dir <path>` installs anywhere else. The installer only replaces or removes folders it installed itself (it leaves a `.nestjs-skills` marker in each); `--force` replaces a same-named folder that it didn't. Pin the version for the team with `npm i -D @nestjs/skills` and `npx nestjs-skills add`. Programmatic use: `import { listSkills, skillsDir } from '@nestjs/skills'`.
+`--agent` also takes several targets (`--agent agents,claude` or repeated). `--dir <path>` installs anywhere else. The installer only replaces or removes folders it installed itself (it leaves a `.nestjs-skills` marker in each); `--force` replaces a same-named folder that it didn't. Pin the version for the team with `npm i -D @nestjs/skills` and `npx nestjs-skills add`. Programmatic use: `import { listSkills, skillsDir } from '@nestjs/skills'`.
 
 ### Claude Code
 

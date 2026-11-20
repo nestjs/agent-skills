@@ -15,6 +15,11 @@ const TARGETS = {
   cursor: { project: '.cursor/skills', user: '.cursor/skills', for: 'Cursor' },
 };
 
+/** Shorthands for several targets. */
+const GROUPS = {
+  all: ['agents', 'claude'], // Codex, Cursor, Claude Code and other readers; Cursor reads both folders
+};
+
 const HELP = `Usage: npx @nestjs/skills <command> [skills...] [options]
 
 Commands:
@@ -23,7 +28,8 @@ Commands:
   list                List the skills in this package
 
 Options:
-  --agent <name>      Where to install: ${Object.keys(TARGETS).join(', ')} (default: agents; repeatable)
+  --agent <name>      Where to install: ${[...Object.keys(TARGETS), ...Object.keys(GROUPS)].join(', ')}
+                      (default: agents; repeatable or comma-separated)
   --global            Install for your user (~/) instead of the current project
   --dir <path>        Install into this folder instead (overrides --agent and --global)
   --force             Overwrite a folder with the same name that this tool didn't install
@@ -34,10 +40,12 @@ Targets:
 ${Object.entries(TARGETS)
   .map(([name, t]) => `  ${name.padEnd(8)} ${t.project.padEnd(16)} ${t.for}`)
   .join('\n')}
+  all      agents + claude  Codex, Cursor and Claude Code at once
 
 Examples:
   npx @nestjs/skills add                      # every skill into .agents/skills
   npx @nestjs/skills add --agent claude       # into .claude/skills
+  npx @nestjs/skills add --agent all          # into .agents/skills and .claude/skills
   npx @nestjs/skills add nestjs nestjs-auth --global
   npx @nestjs/skills remove --agent claude`;
 
@@ -68,9 +76,15 @@ function parse(argv) {
 /** The folders to install into, from --dir, or --agent and --global. */
 function destinations({ agent, global, dir }) {
   if (dir) return [resolve(dir)];
-  const names = (agent ?? ['agents']).flatMap((value) => value.split(',')).map((value) => value.trim()).filter(Boolean);
+  const names = (agent ?? ['agents'])
+    .flatMap((value) => value.split(','))
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .flatMap((name) => GROUPS[name] ?? [name]);
   const unknown = names.filter((name) => !(name in TARGETS));
-  if (unknown.length) fail(`unknown agent "${unknown.join('", "')}". Use one of: ${Object.keys(TARGETS).join(', ')}.`);
+  if (unknown.length) {
+    fail(`unknown agent "${unknown.join('", "')}". Use one of: ${[...Object.keys(TARGETS), ...Object.keys(GROUPS)].join(', ')}.`);
+  }
   const base = global ? homedir() : process.cwd();
   return [...new Set(names.map((name) => join(base, global ? TARGETS[name].user : TARGETS[name].project)))];
 }

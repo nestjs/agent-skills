@@ -47,6 +47,19 @@ describe('cli', () => {
     assert.ok(existsSync(join(home, '.agents/skills/nestjs-data/SKILL.md')));
   });
 
+  it('installs into .agents/skills and .claude/skills with --agent all, and accepts a comma list', () => {
+    const cwd = project();
+    assert.equal(run(cwd, 'add', 'nestjs', '--agent', 'all').status, 0);
+    assert.deepEqual(readdirSync(join(cwd, '.agents/skills')), ['nestjs']);
+    assert.deepEqual(readdirSync(join(cwd, '.claude/skills')), ['nestjs']);
+    assert.ok(!existsSync(join(cwd, '.cursor')));
+    const other = project();
+    assert.equal(run(other, 'add', 'nestjs', '--agent', 'claude,cursor').status, 0);
+    assert.ok(existsSync(join(other, '.claude/skills/nestjs')) && existsSync(join(other, '.cursor/skills/nestjs')));
+    assert.equal(run(cwd, 'remove', '--agent', 'all').status, 0);
+    assert.deepEqual([readdirSync(join(cwd, '.agents/skills')), readdirSync(join(cwd, '.claude/skills'))], [[], []]);
+  });
+
   it('refreshes its own copies but leaves a foreign folder alone unless --force', () => {
     const cwd = project();
     assert.equal(run(cwd, 'add', 'nestjs').status, 0);
