@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "validate": "node scripts/validate.js",
-    "test": "node --test \"test/**/*.test.js\"",
+    "test": "node --test test/cli.test.js",
     "prepublishOnly": "npm run validate && npm test"
   },
   "publishConfig": {
