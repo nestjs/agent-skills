@@ -1,0 +1,14 @@
+{
+  "name": "nestjs",
+  "owner": { "name": "NestJS", "url": "https://nestjs.com" },
+  "description": "Official NestJS plugins for coding agents.",
+  "plugins": [
+    {
+      "name": "nestjs",
+      "source": "./",
+      "description": "NestJS skills: start a project, add features, authentication and authorization, databases, tests, production setup and observability, with the current APIs and the mistakes agents make in Nest apps.",
+      "category": "development",
+      "tags": ["nestjs", "typescript", "node", "backend"]
+    }
+  ]
+}

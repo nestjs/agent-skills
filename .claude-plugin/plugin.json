@@ -1,0 +1,21 @@
+{
+  "name": "nestjs",
+  "displayName": "NestJS",
+  "version": "0.1.0",
+  "description": "Official NestJS skills for coding agents: start a Nest 12 project, add features, authentication and authorization, databases, tests and production setup, with the current APIs and the mistakes agents make in Nest apps.",
+  "author": {
+    "name": "NestJS",
+    "url": "https://nestjs.com"
+  },
+  "homepage": "https://docs.nestjs.com",
+  "license": "MIT",
+  "keywords": [
+    "nestjs",
+    "nest",
+    "typescript",
+    "node",
+    "backend",
+    "api"
+  ],
+  "repository": "https://github.com/nestjs/agent-skills"
+}
