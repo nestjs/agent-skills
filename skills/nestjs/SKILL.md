@@ -24,6 +24,8 @@ npx @nestjs/cli new . --skip-git --package-manager npm
 
 Without a TTY (an agent's shell) it asks nothing: it creates an ESM project with Vitest and installs dependencies. `--minimal` creates a one-file app (`src/main.ts`). `npm start` runs `nest start`, which compiles first.
 
+It also sets up `@nestjs/observe` (`--no-observe` skips it), which sends nothing until the project is linked. Once the project exists, link it or tell the user how: if you can leave a command running in the background, start `npx @nestjs/observe link --no-browser` in the project and give the user the address and the code from its own output (they approve it in the browser, and the command then writes the key pair into `.env`); otherwise tell them to run `npx @nestjs/observe link`. Never write the keys yourself.
+
 Write modules, controllers and services as files yourself (`nestjs-feature` shows the shape); register each in its module. `nest generate` is optional: `npx nest g module|controller|service <name> --no-spec` creates a stub and registers it, which helps when you're unsure where it goes. `nest g resource` makes a CRUD scaffold of stubs, DTOs and an entity class; use it only when you want exactly that, and pass `--type rest --crud` so it doesn't prompt.
 
 The scaffold comes with an `AGENTS.md`; read it in an existing project, along with `package.json` and `nest-cli.json`.
