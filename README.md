@@ -24,6 +24,30 @@ Agents load a skill when its description matches the task, so there's nothing to
 
 The skills live in [`skills/`](skills). Install them for one project (committed with the code, so everyone on the team gets them) or for your user account (every project on your machine).
 
+### Any agent, with npm
+
+```bash
+npx @nestjs/skills add
+```
+
+copies every skill into `.agents/skills/`, which Codex and Cursor read. Choose where with `--agent`:
+
+| `--agent` | Folder | Read by |
+| --- | --- | --- |
+| `agents` (default) | `.agents/skills/` | Codex, Cursor and other Agent Skills readers |
+| `claude` | `.claude/skills/` | Claude Code (and Cursor) |
+| `cursor` | `.cursor/skills/` | Cursor |
+
+```bash
+npx @nestjs/skills add --agent claude              # Claude Code, this project
+npx @nestjs/skills add --agent agents --global     # every project on your machine (~/.agents/skills)
+npx @nestjs/skills add nestjs nestjs-auth          # only some skills
+npx @nestjs/skills list                            # what's in the package
+npx @nestjs/skills remove                          # remove what it installed
+```
+
+`--dir <path>` installs anywhere else. The installer only replaces or removes folders it installed itself (it leaves a `.nestjs-skills` marker in each); `--force` replaces a same-named folder that it didn't. Pin the version for the team with `npm i -D @nestjs/skills` and `npx nestjs-skills add`. Programmatic use: `import { listSkills, skillsDir } from '@nestjs/skills'`.
+
 ### Claude Code
 
 As a plugin, from this repository's marketplace:
@@ -35,7 +59,7 @@ claude plugin install nestjs@nestjs
 
 Or inside a session: `/plugin marketplace add nestjs/agent-skills`, then `/plugin install nestjs@nestjs`. Skills from the plugin are namespaced (`nestjs:nestjs-auth`).
 
-Without the plugin, copy the folders into `.claude/skills/` (project) or `~/.claude/skills/` (user), as in [Any agent](#any-agent).
+Without the plugin: `npx @nestjs/skills add --agent claude` (add `--global` for `~/.claude/skills/`).
 
 To preconfigure a repository for your team, add this to its `.claude/settings.json`; each contributor still runs the install once:
 
@@ -56,7 +80,7 @@ Codex reads skills from `.agents/skills/` in the repository (and in parent folde
 
 Cursor reads skills from `.agents/skills/` and `.cursor/skills/` in the project, and from `~/.agents/skills/` and `~/.cursor/skills/` for your user. It also loads `.claude/skills/` and `.codex/skills/`.
 
-### Any agent
+### Any agent, by hand
 
 Copy (or symlink) the skill folders to where your agent loads skills. `.agents/skills/` covers Codex and Cursor at once:
 
@@ -75,7 +99,8 @@ Keep each folder whole: `SKILL.md` links to its `references/` with relative path
 ## Updating
 
 - **Claude Code plugin:** `claude plugin marketplace update nestjs`, then `claude plugin update nestjs@nestjs`, or turn on auto-update for the marketplace in `/plugin`.
-- **Copies:** `git pull` and copy the folders again (symlinked folders update with the pull).
+- **npm:** `npx @nestjs/skills@latest add` again: it replaces the copies it installed, dropping files a skill no longer has.
+- **Copies by hand:** `git pull` and copy the folders again (symlinked folders update with the pull).
 
 ## Compatibility
 
@@ -94,17 +119,21 @@ Each `SKILL.md` follows the [Agent Skills specification](https://agentskills.io/
 - `description` says when the skill applies, under 1,024 characters;
 - the frontmatter uses only portable fields (`name`, `description`, `license`, `compatibility`), so the same files work in every agent and can be uploaded to the Claude apps.
 
-The repository is also a Claude Code plugin (`.claude-plugin/plugin.json`) and its own marketplace (`.claude-plugin/marketplace.json`).
+The repository is also a Claude Code plugin (`.claude-plugin/plugin.json`), its own marketplace (`.claude-plugin/marketplace.json`), and the npm package `@nestjs/skills` (the skills, the plugin manifests, and the `nestjs-skills` installer; no dependencies).
 
 ## Contributing
 
 Keep `SKILL.md` files short: rules and pitfalls in the file, longer code in `references/`, one level deep. Before adding an API or a pitfall, check it against the docs and run it on a released version.
 
-Validate the manifests and frontmatter:
+Validate the frontmatter, links and versions, and test the installer:
 
 ```bash
+npm run validate
+npm test
 claude plugin validate --strict .
 ```
+
+A release bumps `version` in both `package.json` and `.claude-plugin/plugin.json` (`npm run validate` checks they match), then `npm publish`, which runs the same checks first.
 
 ## License
 
