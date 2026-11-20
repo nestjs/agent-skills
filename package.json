@@ -9,7 +9,7 @@
     "node": ">=20.19.0"
   },
   "bin": {
-    "nestjs-skills": "./bin/cli.js"
+    "nestjs-skills": "bin/cli.js"
   },
   "exports": {
     ".": {
