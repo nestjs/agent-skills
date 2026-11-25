@@ -12,8 +12,16 @@ const json = (file) => JSON.parse(readFileSync(join(root, file), 'utf8'));
 const pkg = json('package.json');
 const plugin = json('.claude-plugin/plugin.json');
 const marketplace = json('.claude-plugin/marketplace.json');
+// The portable Agent Plugins 1.0.0 manifest (agent-plugins.org), read by Cursor, Copilot and other clients.
+const portable = json('plugin.json');
+const PORTABLE_KEYS = new Set(['$schema', 'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords', 'extensions']);
 
-if (plugin.version !== pkg.version) errors.push(`plugin.json version ${plugin.version} != package.json version ${pkg.version}`);
+if (plugin.version !== pkg.version) errors.push(`.claude-plugin/plugin.json version ${plugin.version} != package.json version ${pkg.version}`);
+if (portable.$schema !== 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json') errors.push('plugin.json: $schema is not Agent Plugins 1.0.0');
+if (portable.version !== pkg.version) errors.push(`plugin.json version ${portable.version} != package.json version ${pkg.version}`);
+if (portable.name !== plugin.name) errors.push(`plugin.json name ${portable.name} != .claude-plugin/plugin.json name ${plugin.name}`);
+if (!/^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(portable.name ?? '')) errors.push('plugin.json: name is not a valid Agent Plugins name');
+for (const key of Object.keys(portable)) if (!PORTABLE_KEYS.has(key)) errors.push(`plugin.json: ${key} is not an Agent Plugins 1.0.0 field`);
 if (!marketplace.plugins?.some((entry) => entry.name === plugin.name)) errors.push(`marketplace.json lists no plugin named ${plugin.name}`);
 
 const skillsDir = join(root, 'skills');

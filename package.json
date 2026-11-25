@@ -1,6 +1,6 @@
 {
   "name": "@nestjs/skills",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Official NestJS agent skills: build and extend NestJS applications with coding agents (Claude Code, Codex, Cursor and any Agent Skills reader)",
   "author": "Kamil Mysliwiec",
   "license": "MIT",
@@ -25,6 +25,7 @@
     "bin",
     "skills",
     ".claude-plugin",
+    "plugin.json",
     "index.js",
     "index.d.ts"
   ],
