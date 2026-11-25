@@ -1,0 +1,5 @@
+{
+  "name": "nestjs",
+  "version": "0.1.4",
+  "description": "Official NestJS skills for coding agents: start a Nest 12 project, add features, authentication and authorization, databases, tests and production setup, with the current APIs and the mistakes agents make in Nest apps."
+}

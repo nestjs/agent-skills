@@ -14,10 +14,14 @@ const plugin = json('plugins/nestjs/.claude-plugin/plugin.json');
 const marketplace = json('.claude-plugin/marketplace.json');
 // The portable Agent Plugins 1.0.0 manifest (agent-plugins.org), read by Cursor, Copilot and other clients.
 const portable = json('plugins/nestjs/plugin.json');
+// Gemini CLI reads gemini-extension.json at the root of the release archive built from plugins/nestjs.
+const gemini = json('plugins/nestjs/gemini-extension.json');
 const PORTABLE_KEYS = new Set(['$schema', 'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords', 'extensions']);
 
 if (plugin.version !== pkg.version) errors.push(`.claude-plugin/plugin.json version ${plugin.version} != package.json version ${pkg.version}`);
 if (portable.$schema !== 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json') errors.push('plugin.json: $schema is not Agent Plugins 1.0.0');
+if (gemini.version !== pkg.version) errors.push(`gemini-extension.json version ${gemini.version} != package.json version ${pkg.version}`);
+if (gemini.name !== plugin.name) errors.push(`gemini-extension.json name ${gemini.name} != ${plugin.name}`);
 if (portable.version !== pkg.version) errors.push(`plugin.json version ${portable.version} != package.json version ${pkg.version}`);
 if (portable.name !== plugin.name) errors.push(`plugin.json name ${portable.name} != .claude-plugin/plugin.json name ${plugin.name}`);
 if (!/^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(portable.name ?? '')) errors.push('plugin.json: name is not a valid Agent Plugins name');

@@ -82,6 +82,22 @@ Codex reads skills from `.agents/skills/` in the repository (and in parent folde
 
 Cursor reads skills from `.agents/skills/` and `.cursor/skills/` in the project, and from `~/.agents/skills/` and `~/.cursor/skills/` for your user. It also loads `.claude/skills/` and `.codex/skills/`.
 
+### Gemini CLI
+
+```bash
+gemini extensions install https://github.com/nestjs/agent-skills
+```
+
+installs the skills as a Gemini CLI extension, from the release archive of `plugins/nestjs` (`gemini-extension.json` at its root). `gemini extensions update nestjs` picks up a new release.
+
+### Any agent, with the `skills` CLI
+
+```bash
+npx skills add nestjs/agent-skills
+```
+
+[`skills`](https://skills.sh) finds the plugin through `.claude-plugin/marketplace.json` and asks which agents to install for.
+
 ### Any agent, by hand
 
 Copy (or symlink) the skill folders to where your agent loads skills. `.agents/skills/` covers Codex and Cursor at once:
@@ -135,7 +151,7 @@ npm test
 claude plugin validate --strict .
 ```
 
-A release bumps `version` in `package.json`, `plugins/nestjs/.claude-plugin/plugin.json` and `plugins/nestjs/plugin.json` (`npm run validate` checks they match), then `npm publish`, which runs the same checks first.
+A release bumps `version` in `package.json`, `plugins/nestjs/.claude-plugin/plugin.json`, `plugins/nestjs/plugin.json` and `plugins/nestjs/gemini-extension.json` (`npm run validate` checks they match), then `npm publish`, which runs the same checks first. Pushing the `v*` tag creates the GitHub release with `nestjs.tar.gz` (the `plugins/nestjs` folder), which Gemini CLI installs.
 
 ## License
 
