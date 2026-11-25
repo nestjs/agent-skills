@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /** Absolute path of the folder that holds one sub-folder per skill. */
-export const skillsDir = fileURLToPath(new URL('./skills/', import.meta.url));
+export const skillsDir = fileURLToPath(new URL('./plugins/nestjs/skills/', import.meta.url));
 
 /** Reads `name` and `description` from a SKILL.md's frontmatter. */
 function readFrontmatter(file) {

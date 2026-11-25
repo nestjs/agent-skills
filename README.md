@@ -22,7 +22,7 @@ Agents load a skill when its description matches the task, so there's nothing to
 
 ## Install
 
-The skills live in [`skills/`](skills). Install them for one project (committed with the code, so everyone on the team gets them) or for your user account (every project on your machine).
+The skills live in [`plugins/nestjs/skills/`](plugins/nestjs/skills). Install them for one project (committed with the code, so everyone on the team gets them) or for your user account (every project on your machine).
 
 ### Any agent, with npm
 
@@ -91,10 +91,10 @@ git clone https://github.com/nestjs/agent-skills.git
 ```
 
 ```bash
-mkdir -p .agents/skills && cp -R agent-skills/skills/* .agents/skills/
+mkdir -p .agents/skills && cp -R agent-skills/plugins/nestjs/skills/* .agents/skills/
 ```
 
-For every project on your machine, use `~/.agents/skills/` instead. A symlink (`ln -s "$PWD/agent-skills/skills/nestjs-auth" ~/.agents/skills/`) keeps a copy current with `git pull`.
+For every project on your machine, use `~/.agents/skills/` instead. A symlink (`ln -s "$PWD/agent-skills/plugins/nestjs/skills/nestjs-auth" ~/.agents/skills/`) keeps a copy current with `git pull`.
 
 Keep each folder whole: `SKILL.md` links to its `references/` with relative paths, and the skills refer to each other by name.
 
@@ -121,7 +121,7 @@ Each `SKILL.md` follows the [Agent Skills specification](https://agentskills.io/
 - `description` says when the skill applies, under 1,024 characters;
 - the frontmatter uses only portable fields (`name`, `description`, `license`, `compatibility`), so the same files work in every agent and can be uploaded to the Claude apps.
 
-The repository is also a Claude Code plugin (`.claude-plugin/plugin.json`), its own marketplace (`.claude-plugin/marketplace.json`), and the npm package `@nestjs/skills` (the skills, the plugin manifests, and the `nestjs-skills` installer; no dependencies).
+The plugin itself is [`plugins/nestjs/`](plugins/nestjs): a Claude Code plugin (`.claude-plugin/plugin.json`) and an [Agent Plugins](https://agent-plugins.org) plugin (`plugin.json`, read by Cursor and GitHub Copilot). The repository is also its own Claude Code marketplace (`.claude-plugin/marketplace.json`), and the npm package `@nestjs/skills` (the skills, the plugin manifests, and the `nestjs-skills` installer; no dependencies).
 
 ## Contributing
 
@@ -135,7 +135,7 @@ npm test
 claude plugin validate --strict .
 ```
 
-A release bumps `version` in both `package.json` and `.claude-plugin/plugin.json` (`npm run validate` checks they match), then `npm publish`, which runs the same checks first.
+A release bumps `version` in `package.json`, `plugins/nestjs/.claude-plugin/plugin.json` and `plugins/nestjs/plugin.json` (`npm run validate` checks they match), then `npm publish`, which runs the same checks first.
 
 ## License
 

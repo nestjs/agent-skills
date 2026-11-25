@@ -5,7 +5,7 @@
   "plugins": [
     {
       "name": "nestjs",
-      "source": "./",
+      "source": "./plugins/nestjs",
       "description": "NestJS skills: start a project, add features, authentication and authorization, databases, tests, production setup and observability, with the current APIs and the mistakes agents make in Nest apps.",
       "category": "development",
       "tags": ["nestjs", "typescript", "node", "backend"]

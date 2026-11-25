@@ -10,10 +10,10 @@ const PORTABLE = new Set(['name', 'description', 'license', 'compatibility', 'me
 
 const json = (file) => JSON.parse(readFileSync(join(root, file), 'utf8'));
 const pkg = json('package.json');
-const plugin = json('.claude-plugin/plugin.json');
+const plugin = json('plugins/nestjs/.claude-plugin/plugin.json');
 const marketplace = json('.claude-plugin/marketplace.json');
 // The portable Agent Plugins 1.0.0 manifest (agent-plugins.org), read by Cursor, Copilot and other clients.
-const portable = json('plugin.json');
+const portable = json('plugins/nestjs/plugin.json');
 const PORTABLE_KEYS = new Set(['$schema', 'name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords', 'extensions']);
 
 if (plugin.version !== pkg.version) errors.push(`.claude-plugin/plugin.json version ${plugin.version} != package.json version ${pkg.version}`);
@@ -22,9 +22,17 @@ if (portable.version !== pkg.version) errors.push(`plugin.json version ${portabl
 if (portable.name !== plugin.name) errors.push(`plugin.json name ${portable.name} != .claude-plugin/plugin.json name ${plugin.name}`);
 if (!/^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(portable.name ?? '')) errors.push('plugin.json: name is not a valid Agent Plugins name');
 for (const key of Object.keys(portable)) if (!PORTABLE_KEYS.has(key)) errors.push(`plugin.json: ${key} is not an Agent Plugins 1.0.0 field`);
+if (!marketplace.plugins?.some((entry) => entry.name === plugin.name && entry.source === './plugins/nestjs')) errors.push('marketplace.json: the nestjs plugin must have source ./plugins/nestjs');
+// The Claude directory accepts only Markdown, JSON, text and images inside a plugin from an unverified organization.
+function filesIn(dir) {
+  return readdirSync(dir).flatMap((name) => (statSync(join(dir, name)).isDirectory() ? filesIn(join(dir, name)) : [join(dir, name)]));
+}
+for (const file of filesIn(join(root, 'plugins/nestjs')).filter((f) => !f.endsWith('/.DS_Store'))) {
+  if (!/\.(md|json|txt|ya?ml|png)$|\/LICENSE$/.test(file)) errors.push(`${file.slice(root.length + 1)}: only Markdown, JSON, YAML, text and PNG files may sit in the plugin folder`);
+}
 if (!marketplace.plugins?.some((entry) => entry.name === plugin.name)) errors.push(`marketplace.json lists no plugin named ${plugin.name}`);
 
-const skillsDir = join(root, 'skills');
+const skillsDir = join(root, 'plugins/nestjs/skills');
 const skills = readdirSync(skillsDir).filter((name) => statSync(join(skillsDir, name)).isDirectory());
 if (!skills.length) errors.push('no skills found');
 
